@@ -20,7 +20,7 @@ using namespace std;
 
 class Person
 {
-private:
+protected:
     string name; // Name der Person. (Zur Vereinfachung darf davon ausgegangen werden, dass die Namen der Person-Objekte eindeutig sind.)
     unsigned int wealth;
     map<string, unique_ptr<License>> licenses; // Map von aktuellen Lizenzen.
@@ -40,17 +40,13 @@ public:
     // ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };
 
-// todo
-//  operator<< Person-,Superworker- und Worker-Objekte sollen zusätzlich über operator<< ausgegeben werden können. Der operator ist global zu überladen.
-//  Beispiel: Josiah Herbert Boggis, 190 Coins, {[License for City watch, Salary: 5, Used: 0], [License for Thieves guild, Salary: 4, Used: 0]}]
+ostream &operator<<(ostream &o, const Person &p);
 
 class Worker : public Person
 {
-private:
-    /* data */
 public:
-    Worker(string, unsigned int = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse.
-    void work(unsigned int i);        // Erhoeht wealth um i.
+    Worker(string name, unsigned int wealth = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse.
+    void work(unsigned int i);                    // Erhoeht wealth um i.
     // Format: [Worker Person::print(o)
     ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };
@@ -58,14 +54,13 @@ public:
 class Superworker : public Person
 {
 private:
-    /* data */
+    unsigned int fee;
+
 public:
-    Superworker(unsigned int fee, string, unsigned int = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse. fee ist eine zusaetzliche Instanzvariable in der Superworker-Klasse.
-    void work(unsigned int i);                               // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
+    Superworker(unsigned int fee, string name, unsigned int wealth = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse. fee ist eine zusaetzliche Instanzvariable in der Superworker-Klasse.
+    void work(unsigned int i);                                           // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
     // Format: [Superworker Person::print(o)
     ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };
-
-ostream &operator<<(ostream &o, const Person &p);
 
 #endif

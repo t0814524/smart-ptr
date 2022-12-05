@@ -128,3 +128,42 @@ ostream &operator<<(ostream &o, const Person &p)
 {
     return p.print(o);
 }
+
+// Setzt Instanzvariablen durch Konstruktor der Basisklasse.
+// todo: w the point of that??
+Worker::Worker(string name, unsigned int wealth) : Person(name, wealth)
+{
+}
+
+// Erhoeht wealth um i.
+void Worker::work(unsigned int i)
+{
+    Person::wealth += i;
+}
+
+// Format: [Worker Person::print(o)
+// Gibt das Objekt auf den ostream o aus.
+ostream &Worker::print(ostream &o) const
+{
+    o << "Worker ";
+    return Person::print(o);
+}
+
+// Setzt Instanzvariablen durch Konstruktor der Basisklasse. fee ist eine zusaetzliche Instanzvariable in der Superworker-Klasse.
+Superworker::Superworker(unsigned int fee, string name, unsigned int wealth) : Person::Person(name, wealth)
+{
+}
+
+// Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
+void Superworker::work(unsigned int i)
+{
+    Person::wealth += (i + fee);
+}
+
+// Format: [Superworker Person::print(o)
+// Gibt das Objekt auf den ostream o aus.
+ostream &Superworker::print(ostream &o) const
+{
+    o << "Superworker ";
+    return Person::print(o);
+}
