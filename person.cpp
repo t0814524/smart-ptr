@@ -1,23 +1,27 @@
-#include "person.h"
-#include <stdexcept>
-#include <ostream>
+// #include "person.h"
+// #include <stdexcept>
+// #include <ostream>
 
 // moped
-// #include<string>
-// #include<memory>
-// #include<vector>
-// #include<iostream>
-// #include<map>
-// #include "person.h"
-// #include "license.h"
+#include <string>
+#include <memory>
+#include <vector>
+#include <iostream>
+#include <map>
+#include "person.h"
+#include "license.h"
 
 // Setzt Instanzvariablen, wobei name nicht leer sein darf.
-Person::Person(string name, unsigned int wealth) : wealth{wealth}
+Person::Person(string name, unsigned int wealth) : wealth{wealth}, licenses{}
 {
     if (name.length() < 0)
     {
         throw runtime_error("name is empty");
     }
+    this->name = name;
+    // todo
+    // map<string, unique_ptr<License>> licenses;
+    // this->licenses = licenses;
 }
 
 // Falls eine Lizenz fuer guild vorhanden ist und man diese noch benutzen kann, wird die Lizenz benutzt und die Person arbeitet fuer das auf der Lizenz gedruckte Gehalt....
@@ -73,7 +77,7 @@ void Person::receive_license(unique_ptr<License> l)
     }
     else
     {
-        licenses.emplace(name, l);
+        licenses.emplace(std::make_pair(name, std::move(l)));
     }
 }
 
@@ -83,7 +87,8 @@ void Person::transfer_license(string l, shared_ptr<Person> p)
     if (licenses.find(l) == licenses.end())
         throw runtime_error("requested license does not exist");
 
-    p->receive_license(std::make_unique<License>(licenses[l]));
+    // p->receive_license(std::make_unique<License>(licenses[l], licenses[l]->get_salary()));
+    p->receive_license(std::move(licenses[l]));
     licenses.erase(l);
 }
 //  Liefert true falls eine Lizenz mit Namen l vorhanden ist und diese gueltig ist, ansonsten false.
@@ -112,11 +117,14 @@ ostream &Person::print(ostream &o) const
             o << ", ";
         }
         // todo
-        // o << *l.second;
+        o << *l.second;
         sep = true;
     }
     o << "}";
     return o;
 }
 
-// todo: global shit overload <<
+ostream &operator<<(ostream &o, const Person &p)
+{
+    return p.print(o);
+}

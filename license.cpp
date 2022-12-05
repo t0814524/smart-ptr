@@ -14,7 +14,7 @@
 using namespace std;
 
 // Setzt Instanzvariablen. Name darf nicht leer und salary muss groesser als 0 sein. Sollte ein Parameter nicht den vorgegebenen Werten entsprechen, ist eine Exception vom Typ runtime_error zu werfen.
-License::License(string name, unsigned int salary)
+License::License(string name, unsigned int salary) : counter{0}
 {
     if (name.length() < 1)
         throw runtime_error("name is empty");

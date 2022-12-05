@@ -114,6 +114,7 @@ ostream &Guild::print(ostream &o) const
     return o;
 }
 
-// todo
-//  Beispiel: [City watch, License fee: 6, Job salary: 5, {Carrot Ironfoundersson, Samuel Vimes}]
-//  operator<<
+ostream &operator<<(ostream &o, const Guild &g)
+{
+    return g.print(o);
+}

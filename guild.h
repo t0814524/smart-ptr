@@ -29,8 +29,6 @@ public:
     ostream &print(ostream &o) const;
 };
 
-// todo
-//  Beispiel: [City watch, License fee: 6, Job salary: 5, {Carrot Ironfoundersson, Samuel Vimes}]
-//  operator<<
+ostream &operator<<(ostream &o, const Guild &g);
 
 #endif

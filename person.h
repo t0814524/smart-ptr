@@ -66,4 +66,6 @@ public:
     ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };
 
+ostream &operator<<(ostream &o, const Person &p);
+
 #endif
