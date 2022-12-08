@@ -17,7 +17,6 @@ private:
     unsigned int counter; // Anzahl der bereits getaetigten Aufgaben.
 public:
     License(string name, unsigned int salary); // Setzt Instanzvariablen. Name darf nicht leer und salary muss groesser als 0 sein. Sollte ein Parameter nicht den vorgegebenen Werten entsprechen, ist eine Exception vom Typ runtime_error zu werfen.
-    ~License();                                // todo maybe
 
     string get_guildname() const;    //  Liefert den Namen der ausstellenden Gilde.
     unsigned int get_salary() const; // Liefert den Lohn einer Aufgabe.

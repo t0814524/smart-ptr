@@ -12,13 +12,15 @@
 
 using namespace std;
 
+class License;
+
 Guild::Guild(string name, unsigned fee, unsigned sal, const vector<shared_ptr<Person>> &members)
 {
     if (name.length() < 1)
         throw runtime_error("name is empty");
     if (fee < 1)
         throw runtime_error("fee has to be bigger than 0");
-    if (salary < 1)
+    if (sal < 1)
         throw runtime_error("salary has to be bigger than 0");
 
     this->name = name;
@@ -27,17 +29,20 @@ Guild::Guild(string name, unsigned fee, unsigned sal, const vector<shared_ptr<Pe
     // to check if that works
     for (shared_ptr<Person> v : members)
     {
-        this->members.emplace(v->get_name(), v);
+        const auto [it, success2] = this->members.insert({v->get_name(), v});
+        if (!success2)
+        {
+            throw runtime_error("already exists");
+        }
     }
 }
 
 // Fuegt Person p der Gilde hinzu, falls nicht schon bereits vorhanden. Liefert true bei Erfolg, ansonsten false.
 bool Guild::add_member(shared_ptr<Person> p)
 {
-    if (members.find(p->get_name()) != members.end())
+    if (members.find(p->get_name()) == members.end())
     {
         // add
-        // todo check if works in fkn moped
         // members.insert({p->get_name(), p});
         members.emplace(p->get_name(), p);
         return true;
@@ -62,8 +67,6 @@ void Guild::grant_license(string n)
 
     if (members[n]->pay_fee(fee))
     {
-        // todo could be wrong
-        // unique_ptr<License> up = std::make_unique<License>(name, salary);
         members[n]->receive_license(std::make_unique<License>(name, salary));
     }
     else
@@ -79,7 +82,7 @@ bool Guild::offer_job(shared_ptr<Person> p) const
     if (members.find(p->get_name()) != members.end())
     {
         // member of guild get 2x salary and dont need a license, so just increase wealth
-        p->increase_wealth(salary * 2);
+        p->work(salary * 2);
         return true;
     }
     else
@@ -100,7 +103,7 @@ bool Guild::offer_job(shared_ptr<Person> p) const
 // Format: [name, License fee: fee, Job salary: salary, {member_name0, member_name1, ..., member_namen}]
 ostream &Guild::print(ostream &o) const
 {
-    o << "[" << name + ", License fee: " << to_string(fee) << ", Job Salary: " << to_string(salary);
+    o << "[" << name + ", License fee: " << to_string(fee) << ", Job salary: " << to_string(salary) << ", {";
     bool sep{false};
     for (auto m : members)
     {
@@ -111,7 +114,7 @@ ostream &Guild::print(ostream &o) const
         o << m.second->get_name();
         sep = true;
     }
-    return o;
+    return o << "}]";
 }
 
 ostream &operator<<(ostream &o, const Guild &g)

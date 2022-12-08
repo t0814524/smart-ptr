@@ -14,14 +14,11 @@
 // Setzt Instanzvariablen, wobei name nicht leer sein darf.
 Person::Person(string name, unsigned int wealth) : wealth{wealth}, licenses{}
 {
-    if (name.length() < 0)
+    if (name.length() < 1)
     {
         throw runtime_error("name is empty");
     }
     this->name = name;
-    // todo
-    // map<string, unique_ptr<License>> licenses;
-    // this->licenses = licenses;
 }
 
 // Falls eine Lizenz fuer guild vorhanden ist und man diese noch benutzen kann, wird die Lizenz benutzt und die Person arbeitet fuer das auf der Lizenz gedruckte Gehalt....
@@ -36,13 +33,8 @@ void Person::work(string guild)
     {
         throw runtime_error("license invalid");
     }
-    wealth += licenses[guild]->get_salary();
+    work(licenses[guild]->get_salary());
 }
-
-// tojdo wtf is that
-//  virtual void Person::work(unsigned int) = 0{
-
-// }
 
 // Erhoeht wealth um i.
 void Person::increase_wealth(unsigned int i)
@@ -69,7 +61,6 @@ bool Person::pay_fee(unsigned int i)
 // Speichert die Lizenz l in der Map der Lizenzen der Person. Sollte es bereits eine Lizenz mit dem gleichen Namen geben, ist die alte Lizenz zu zerstoeren.
 void Person::receive_license(unique_ptr<License> l)
 {
-    // todo check if thats right might need to std::move??
     auto name = l->get_guildname();
     if (licenses.find(name) != licenses.end())
     {
@@ -98,12 +89,6 @@ bool Person::eligible(string l) const
     return it != licenses.end() && it->second->valid() ? true : false;
 }
 
-// todo
-// Die Klasse Person hat folgendes Ausgabeformat.
-// virtual ostream &Person::print(ostream &o) const
-// {
-// }
-
 // Format: name, wealth Coins, {license_0, license_1, ..., license_n}]
 // Gibt das Objekt auf den ostream o aus.
 ostream &Person::print(ostream &o) const
@@ -116,7 +101,6 @@ ostream &Person::print(ostream &o) const
         {
             o << ", ";
         }
-        // todo
         o << *l.second;
         sep = true;
     }
@@ -130,7 +114,7 @@ ostream &operator<<(ostream &o, const Person &p)
 }
 
 // Setzt Instanzvariablen durch Konstruktor der Basisklasse.
-// todo: w the point of that??
+// w the point of that??
 Worker::Worker(string name, unsigned int wealth) : Person(name, wealth)
 {
 }
@@ -145,13 +129,15 @@ void Worker::work(unsigned int i)
 // Gibt das Objekt auf den ostream o aus.
 ostream &Worker::print(ostream &o) const
 {
-    o << "Worker ";
-    return Person::print(o);
+    o << "[Worker ";
+    Person::print(o);
+    return o << ']';
 }
 
 // Setzt Instanzvariablen durch Konstruktor der Basisklasse. fee ist eine zusaetzliche Instanzvariable in der Superworker-Klasse.
-Superworker::Superworker(unsigned int fee, string name, unsigned int wealth) : Person::Person(name, wealth)
+Superworker::Superworker(unsigned int fee, string name, unsigned int wealth) : Person::Person{name, wealth}
 {
+    this->fee = fee;
 }
 
 // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
@@ -164,6 +150,7 @@ void Superworker::work(unsigned int i)
 // Gibt das Objekt auf den ostream o aus.
 ostream &Superworker::print(ostream &o) const
 {
-    o << "Superworker ";
-    return Person::print(o);
+    o << "[Superworker ";
+    Person::print(o);
+    return o << ']';
 }
