@@ -35,6 +35,29 @@ Guild::Guild(string name, unsigned fee, unsigned sal, const vector<shared_ptr<Pe
             throw runtime_error("already exists");
         }
     }
+    Guild::instances.push_back(this);
+}
+
+Guild::~Guild()
+{
+    auto res = std::find_if(Guild::instances.begin(), Guild::instances.end(), [&](const Guild *g)
+                            { return g == this; });
+    if (res == Guild::instances.end())
+    {
+        cout << "destructor trying to delete Guild from static instances member but its not there!!!?!???";
+    }
+    else
+    {
+        // test deletion of Guilds from static instances vec:
+        // cout << "erase";
+        // cout << *res;
+        Guild::instances.erase(res);
+        // cout << "instances after erase:";
+        // for (auto inst : Guild::instances)
+        // {
+        //     cout << *inst;
+        // }
+    }
 }
 
 // Fuegt Person p der Gilde hinzu, falls nicht schon bereits vorhanden. Liefert true bei Erfolg, ansonsten false.
@@ -120,4 +143,34 @@ ostream &Guild::print(ostream &o) const
 ostream &operator<<(ostream &o, const Guild &g)
 {
     return g.print(o);
+}
+
+void Guild::add_book_entry(BookEntry entry)
+{
+    book.push_back(entry);
+    cout << " pbac ";
+}
+void Guild::add_book_entry(string guild, BookEntry entry)
+{
+    for (auto g : Guild::instances)
+    {
+        cout << g->name;
+        if (g->name == guild)
+        {
+            cout << "found name";
+            g->add_book_entry(entry);
+            return;
+        }
+    }
+    throw runtime_error("Cant add bookentry, Guild: " + guild + " does not exist");
+}
+
+ostream &Guild::print_book(ostream &o) const
+{
+    cout << "book: ";
+    for (auto e : this->book)
+    {
+        o << "[Name: " << e.name << ", Salary: " << e.salary << "]";
+    }
+    return o;
 }

@@ -18,7 +18,7 @@ class License;
 
 using namespace std;
 
-class Person
+class Person : public std::enable_shared_from_this<Person>
 {
 protected:
     string name; // Name der Person. (Zur Vereinfachung darf davon ausgegangen werden, dass die Namen der Person-Objekte eindeutig sind.)

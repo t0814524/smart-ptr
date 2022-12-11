@@ -10,6 +10,7 @@
 #include <map>
 #include "person.h"
 #include "license.h"
+#include "guild.h"
 
 // Setzt Instanzvariablen, wobei name nicht leer sein darf.
 Person::Person(string name, unsigned int wealth) : wealth{wealth}, licenses{}
@@ -24,6 +25,7 @@ Person::Person(string name, unsigned int wealth) : wealth{wealth}, licenses{}
 // Falls eine Lizenz fuer guild vorhanden ist und man diese noch benutzen kann, wird die Lizenz benutzt und die Person arbeitet fuer das auf der Lizenz gedruckte Gehalt....
 void Person::work(string guild)
 {
+    cout << "try work for guild ";
     if (licenses.find(guild) == licenses.end())
     {
         throw runtime_error("license not available");
@@ -33,7 +35,26 @@ void Person::work(string guild)
     {
         throw runtime_error("license invalid");
     }
-    work(licenses[guild]->get_salary());
+    auto sal = licenses[guild]->get_salary();
+    work(sal);
+    // todo which guidl??/sdfasf
+    weak_ptr<Person> w;
+    Person *pp = this;
+    shared_ptr<Person> sp = shared_from_this();
+
+    cout << "checks";
+    BookEntry asdf = {sp, name, sal};
+    // if (shared_ptr<Person> spt = asdf.person.lock())
+    // {
+    //     cout << " asdfadsf ";
+    //     cout << *spt;
+    // }
+    // else
+    // {
+    //     cout << " e ";
+    // }
+    Guild::add_book_entry(guild, asdf);
+    cout << "aadded";
 }
 
 // Erhoeht wealth um i.
