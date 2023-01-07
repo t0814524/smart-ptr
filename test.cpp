@@ -10,14 +10,13 @@
 
 int main()
 {
-    Worker w = Worker("hs", 8);
     Superworker sw = Superworker(5, "sw1", 10);
     // w.work(5);
     // sw.work(3);
     vector<shared_ptr<Person>> v;
     std::shared_ptr<Person> s1{std::make_shared<Superworker>(3, "Weatherwax", 10)};
     std::shared_ptr<Person> s2{std::make_shared<Worker>("Weatherwix", 20)};
-    std::shared_ptr<Person> s3{std::make_shared<Worker>("Weatherwixxer", 30)};
+    std::shared_ptr<Person> s3{std::make_shared<Worker>("Weatherwaxxer", 30)};
     v.push_back(s1);
     v.push_back(s2);
     v.push_back(s3);
@@ -37,13 +36,36 @@ int main()
     License l2{"guild44", 3};
     s1->receive_license(make_unique<License>(l));
     s2->receive_license(make_unique<License>(l2));
-    cout << "bfb";
+    cout << " bfbooks ";
+    s1->work("guild44");
     s1->work("guild44");
     // s2->work("guild44");
-    cout << " wtf ";
     g3.add_member(s3);
     g3.print_book(cout);
     g3.offer_job(s3);
+
+    {
+        std::shared_ptr<Person> s4{std::make_shared<Worker>("worker4", 30)};
+        s4->receive_license(make_unique<License>(l2));
+        g3.add_member(s4); // add member has shared ptr so s4 is not expired after this scope
+        try
+        {
+            s4->work("guild44");
+            s4->work("guild44");
+            s4->receive_license(make_unique<License>(l2));
+            s4->work("guild44");
+            s4->work("guild44");
+            s4->work("guild44");
+        }
+        catch (const std::exception &e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+    }
+    cout << " book2 ";
     g3.print_book(cout);
+    string current_top_worker = g3.get_top_worker();
+    cout << "current not expired top worker of guild: " + current_top_worker;
+
     return 0;
 }

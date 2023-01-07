@@ -48,15 +48,7 @@ Guild::~Guild()
     }
     else
     {
-        // test deletion of Guilds from static instances vec:
-        // cout << "erase";
-        // cout << *res;
         Guild::instances.erase(res);
-        // cout << "instances after erase:";
-        // for (auto inst : Guild::instances)
-        // {
-        //     cout << *inst;
-        // }
     }
 }
 
@@ -105,7 +97,7 @@ bool Guild::offer_job(shared_ptr<Person> p) const
     if (members.find(p->get_name()) != members.end())
     {
         // member of guild get 2x salary and dont need a license, so just increase wealth
-        p->work(salary * 2);
+        p->work(this->name, salary * 2);
         return true;
     }
     else
@@ -148,29 +140,44 @@ ostream &operator<<(ostream &o, const Guild &g)
 void Guild::add_book_entry(BookEntry entry)
 {
     book.push_back(entry);
-    cout << " pbac ";
 }
 void Guild::add_book_entry(string guild, BookEntry entry)
 {
     for (auto g : Guild::instances)
     {
-        cout << g->name;
         if (g->name == guild)
         {
-            cout << "found name";
             g->add_book_entry(entry);
             return;
         }
     }
-    throw runtime_error("Cant add bookentry, Guild: " + guild + " does not exist");
+    throw runtime_error("Cant add bookentry, Guild: " + guild + " does not exist on static member *instances*");
 }
 
 ostream &Guild::print_book(ostream &o) const
 {
-    cout << "book: ";
     for (auto e : this->book)
     {
         o << "[Name: " << e.name << ", Salary: " << e.salary << "]";
     }
     return o;
+}
+
+string Guild::get_top_worker() // get currently existing Person who made the most money in this guild.
+{
+    map<string, int> ranking;
+
+    // sum worker salaries
+    for (auto e : this->book)
+    {
+        if (std::shared_ptr<Person> spt = e.person.lock())
+        {
+            ranking[e.name] = ranking[e.name] + e.salary;
+        }
+    }
+
+    auto max = max_element(ranking.begin(), ranking.end(), [](const pair<string, int> &a, const pair<string, int> &b)
+                           { return a.second < b.second; });
+
+    return max->first;
 }

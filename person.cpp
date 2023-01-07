@@ -25,7 +25,6 @@ Person::Person(string name, unsigned int wealth) : wealth{wealth}, licenses{}
 // Falls eine Lizenz fuer guild vorhanden ist und man diese noch benutzen kann, wird die Lizenz benutzt und die Person arbeitet fuer das auf der Lizenz gedruckte Gehalt....
 void Person::work(string guild)
 {
-    cout << "try work for guild ";
     if (licenses.find(guild) == licenses.end())
     {
         throw runtime_error("license not available");
@@ -36,9 +35,14 @@ void Person::work(string guild)
         throw runtime_error("license invalid");
     }
     auto sal = licenses[guild]->get_salary();
-    work(sal);
+    work(guild, sal);
     // if work is called with amount(int) guild is unknown
-    // offer_job and work(guild) always ends here but Superworker adds fee afterwards...
+    // offer_job does not necessarily end here and Superworker adds fee afterwards...
+
+    // would be nice to add book entry here but its better to add it down the line in the work method of subclasses
+    // because they could do special shit like superworker and Guild.offer_job also would have to be handled seperately
+
+    /*
     if (dynamic_cast<const Superworker *>(this) != nullptr)
     {
         cout << " superworker ";
@@ -47,14 +51,7 @@ void Person::work(string guild)
     {
         cout << "no super w";
     }
-    weak_ptr<Person> w;
-    Person *pp = this;
-    shared_ptr<Person> sp = shared_from_this();
-
-    BookEntry asdf = {sp, name, sal};
-
-    Guild::add_book_entry(guild, asdf);
-    cout << "aadded";
+    */
 }
 
 // Erhoeht wealth um i.
@@ -141,9 +138,11 @@ Worker::Worker(string name, unsigned int wealth) : Person(name, wealth)
 }
 
 // Erhoeht wealth um i.
-void Worker::work(unsigned int i)
+void Worker::work(string guild, unsigned int i)
 {
     Person::wealth += i;
+
+    Guild::add_book_entry(guild, {shared_from_this(), name, i});
 }
 
 // Format: [Worker Person::print(o)
@@ -162,9 +161,11 @@ Superworker::Superworker(unsigned int fee, string name, unsigned int wealth) : P
 }
 
 // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
-void Superworker::work(unsigned int i)
+void Superworker::work(string guild, unsigned int i)
 {
-    Person::wealth += (i + fee);
+    Person::wealth += i + fee;
+
+    Guild::add_book_entry(guild, {shared_from_this(), name, i + fee});
 }
 
 // Format: [Superworker Person::print(o)

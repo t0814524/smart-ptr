@@ -28,7 +28,8 @@ public:
     Person(string name, unsigned int wealth = 0); // Setzt Instanzvariablen, wobei name nicht leer sein darf.
     virtual ~Person() = default;
     void work(string guild); // Falls eine Lizenz fuer guild vorhanden ist und man diese noch benutzen kann, wird die Lizenz benutzt und die Person arbeitet fuer das auf der Lizenz gedruckte Gehalt....
-    virtual void work(unsigned int) = 0;
+    virtual void work(string guild, unsigned int) = 0;
+    // virtual void work(unsigned int) = 0; todo
     void increase_wealth(unsigned int i);                  // Erhoeht wealth um i.
     string get_name() const;                               // Liefert name.
     bool pay_fee(unsigned int i);                          // Sollte das Vermoegen der Person nicht ausreichen, um die Gebuehr i zu bezahlen oder i 0 sein, ist false zu liefern. Ansonsten wird das Vermoegen reduziert um i und true returniert.
@@ -46,7 +47,7 @@ class Worker : public Person
 {
 public:
     Worker(string name, unsigned int wealth = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse.
-    void work(unsigned int i);                    // Erhoeht wealth um i.
+    void work(string guild, unsigned int i);      // Erhoeht wealth um i.
     // Format: [Worker Person::print(o)
     ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };
@@ -58,7 +59,7 @@ private:
 
 public:
     Superworker(unsigned int fee, string name, unsigned int wealth = 0); // Setzt Instanzvariablen durch Konstruktor der Basisklasse. fee ist eine zusaetzliche Instanzvariable in der Superworker-Klasse.
-    void work(unsigned int i);                                           // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
+    void work(string guild, unsigned int i);                             // Erhoeht wealth um i+fee. (Die zusätzliche Gebuhr fee wird verrechnet, egal ob die Arbeit mit Lizenz oder als Gildenmitglied verrichtet wird.)
     // Format: [Superworker Person::print(o)
     ostream &print(ostream &o) const; // Gibt das Objekt auf den ostream o aus.
 };

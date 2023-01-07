@@ -19,20 +19,6 @@ struct BookEntry
     unsigned int salary;
 };
 
-// BookEntry make_book_entry(weak_ptr<Person> person, int salary)
-// {
-//     string name;
-//     if (std::shared_ptr<Person> spt = person.lock())
-//     {
-//         name = spt->get_name();
-//     }
-//     else
-//     {
-//         std::cout << "spt is expired\n";
-//     }
-//     return BookEntry{person, name, salary};
-// }
-
 class Guild
 {
 private:
@@ -48,6 +34,7 @@ public:
     Guild(string name, unsigned fee, unsigned sal, const vector<shared_ptr<Person>> &members = {});
     ~Guild();
     void add_book_entry(BookEntry entry);
+    string get_top_worker();                    // get currently existing Person who made the most money in this guild.
     bool add_member(shared_ptr<Person> p);      // Fuegt Person p der Gilde hinzu, falls nicht schon bereits vorhanden. Liefert true bei Erfolg, ansonsten false.
     bool remove_member(string n);               // Entfernt Person mit Namen n aus der Gilde. Liefert true bei Erfolg, ansonsten false.
     void grant_license(string n);               // Verkauft Gildenmitglied eine Lizenz der Gilde, sofern sich Person mit Namen n eine Lizenz leisten kann (fee) und ein Mitglied der Gilde ist.
