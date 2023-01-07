@@ -37,22 +37,22 @@ void Person::work(string guild)
     }
     auto sal = licenses[guild]->get_salary();
     work(sal);
-    // todo which guidl??/sdfasf
+    // if work is called with amount(int) guild is unknown
+    // offer_job and work(guild) always ends here but Superworker adds fee afterwards...
+    if (dynamic_cast<const Superworker *>(this) != nullptr)
+    {
+        cout << " superworker ";
+    }
+    else
+    {
+        cout << "no super w";
+    }
     weak_ptr<Person> w;
     Person *pp = this;
     shared_ptr<Person> sp = shared_from_this();
 
-    cout << "checks";
     BookEntry asdf = {sp, name, sal};
-    // if (shared_ptr<Person> spt = asdf.person.lock())
-    // {
-    //     cout << " asdfadsf ";
-    //     cout << *spt;
-    // }
-    // else
-    // {
-    //     cout << " e ";
-    // }
+
     Guild::add_book_entry(guild, asdf);
     cout << "aadded";
 }
